@@ -1,0 +1,151 @@
+<style type="text/css">
+  #garage { display: none; }
+  #button_place, #modify_buttons { display: inline; }
+  div { margin-left: 10px; }
+  p { margin: 0; }
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script type="text/javascript">
+function setup_node(data)
+{
+  return $(document.createElement('p'))
+    .text(data.name)
+    .data('content', data.content)
+    .data('id', data.id)
+    .data('parent_id', data.parent_id)
+    .data('preliminary', data.preliminary)
+    .attr('id', 'node_' + data.id)
+    .click(function() {
+      handle_node_click(this);
+      return false;
+    })
+    .append(
+      $(document.createElement('p'))
+        .addClass('button_place')
+    )
+    .append(
+      $(document.createElement('div'))
+        .attr('id', 'children_' + data.id)
+    );
+}
+
+function handle_node_click(node)
+{
+console.log('clicked node ' + $(node).data('id'));
+  $('#modify_buttons').appendTo($(node).find('.button_place:first'));
+  if ($('#workbench').data('id') && $('#workbench').data('content') != $('#workbench').val())
+  {
+    $('#node_' + $('#workbench').data('id')).data('content', $('#workbench').val());
+    $.ajax({
+      type: 'PUT',
+      url: '/nodes/' + $('#workbench').data('id'),
+      data: 'node[content]=' + $('#workbench').val()
+    });
+  }
+  $('#workbench')
+    .val($(node).data('content'))
+    .data('content', $(node).data('content'))
+    .data('id', $(node).data('id'))
+    .data('parent_id', $(node).data('parent_id'));
+}
+
+function build_list_from_tree(parent_node, tree)
+{
+  tree['preliminary'] = false;
+  if (parent_node == null)
+    $('#tree').children().remove();
+  parent_node = $(parent_node || '#tree');
+  parent_node.append(setup_node(tree));
+  if (tree['children'])
+  {
+    for (var i = 0; i < tree.children.length; i++)
+      build_list_from_tree($('#children_' + tree.id), tree.children[i]);
+  }
+}
+
+function load_tree(tree_id)
+{
+  $.getJSON('/nodes/' + tree_id + '.json?deep=true', function(data) {
+    build_list_from_tree(null, data);
+  });
+}
+
+$(function() {
+  $('body').data('last_preliminary_id', 0);
+  $('#add_sibling').click(function() {
+    var preliminary_id = $('body').data('last_preliminary_id', $('body').data('last_preliminary_id') + 1).data('last_preliminary_id');
+    $(setup_node({
+      id: 'preliminary_' + preliminary_id,
+      parent_id: $('#workbench').data('parent_id'),
+      name: 'new node ' + preliminary_id,
+      content: '',
+      preliminary: true
+    })).appendTo($('#node_' + $('#workbench').data('id')).parent());
+    $.ajax({
+      type: 'POST',
+      url: '/nodes.js',
+      data: 'node[preliminary_id]=' + preliminary_id + ';node[name]=new node ' + preliminary_id + ';node[content]=new content;node[parent_id]=' + $('#workbench').data('parent_id'),
+      success: function(response) {
+        var data = eval('(' + response + ')');
+        $('#node_preliminary_' + data.preliminary_id).data('id', data.id).data('preliminary', false).attr('id', 'node_' + data.id);
+      }
+    });
+  });
+  $('#add_child').click(function() {
+    var child = document.createElement('li');
+    $(child).text('new').data('content', 'new').appendTo($('#children_' + $(this).parent().data('id'))).click(function() {
+      handle_node_click(node, tree)
+    });
+    $.ajax({
+      type: 'POST',
+      url: '/nodes.js',
+      data: 'node[name]=new;node[content]=new;node[parent_id]=' + $(this).parent().data('id'),
+      dataType: 'json'
+    });
+  });
+  $('#delete_child').click(function() {
+    $.ajax({
+      type: 'DELETE',
+      url: '/nodes/' + $('#workbench').data('id'),
+      dataType: 'json'
+    });
+    $('#modify_buttons').appendTo($('#garage'));
+    $('#node_' + $('#workbench').data('id')).remove();
+  });
+});
+</script>
+<ul id="tree">
+</ul>
+<textarea rows="20" cols="80" id="workbench"></textarea>
+<div id="garage">
+  <p id="modify_buttons">
+    <a id="add_sibling">add sibling</a>
+    <a id="add_child">add child</a>
+    <a id="delete_child">delete node</a>
+  </p>
+</div>
+<h1>Listing trees</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Content</th>
+    <th>Parent</th>
+  </tr>
+
+<% for node in @nodes %>
+  <tr>
+    <td><%=h node.name %></td>
+    <td><%=h node.content %></td>
+    <td><%=h node.parent_id %></td>
+    <td><%= link_to_function 'Load', "load_tree(#{node.id});" %></td>
+    <td><%= link_to 'Show', node %></td>
+    <td><%= link_to 'Edit', edit_node_path(node) %></td>
+    <td><%= link_to 'Destroy', node, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New tree', new_node_path %>

@@ -1,0 +1,12 @@
+I like taking notes. I don't like taking notes on paper. I like organizing information in a tree structure. I don't like using a heavy-weight tool for an easy task. When my office box was running Windows, the requirements sketched by these personal preferences were met by "Treepad":http://www.treepad.com/. On a Mac I could use "Jreepad":http://jreepad.sourceforge.net/, which is close enough to Treepad for an easy switch and it can even read the files Treepad writes.
+
+The downside of both Treepad and Jreepad is their lack of portability. They require you to install them locally and if you want to use your notes on several machines you have to take care of keeping the data files in sync yourself. That's where treetonin comes in. treetonin is based on Rails and jQuery and takes tree based notes to the cloud.
+
+h2. Installation
+
+* fetch the sources
+* install the "acts_as_tree plugin":http://github.com/rails/acts_as_tree/
+* setup the database with rake db:create and rake db:migrate
+* run the server, e.g. with script/server
+
+The interface needs some styling, but should already be pretty straightforward.
