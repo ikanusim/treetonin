@@ -9,7 +9,6 @@
 function setup_node(data)
 {
   return $(document.createElement('p'))
-    .text(data.name)
     .data('content', data.content)
     .data('id', data.id)
     .data('parent_id', data.parent_id)
@@ -19,6 +18,25 @@ function setup_node(data)
       handle_node_click(this);
       return false;
     })
+    .dblclick(function() {
+      var node_name = $(this).children('.node_name:first');
+      var new_name = prompt('Change node name', node_name.text());
+      if (new_name != node_name.text())
+      {
+        node_name.text(new_name);
+        $.ajax({
+          type: 'PUT',
+          url: '/nodes/' + $('#workbench').data('id'),
+          data: 'node[name]=' + new_name
+        });
+      }
+      return false;
+    })
+    .append(
+      $(document.createElement('span'))
+        .addClass('node_name')
+        .text(data.name)
+    )
     .append(
       $(document.createElement('p'))
         .addClass('button_place')
