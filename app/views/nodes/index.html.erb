@@ -92,15 +92,22 @@ $(function() {
     });
   });
   $('#add_child').click(function() {
-    var child = document.createElement('li');
-    $(child).text('new').data('content', 'new').appendTo($('#children_' + $(this).parent().data('id'))).click(function() {
-      handle_node_click(node, tree)
-    });
+    var preliminary_id = $('body').data('last_preliminary_id', $('body').data('last_preliminary_id') + 1).data('last_preliminary_id');
+    $(setup_node({
+      id: 'preliminary_' + preliminary_id,
+      parent_id: $('#workbench').data('id'),
+      name: 'new node ' + preliminary_id,
+      content: '',
+      preliminary: true
+    })).appendTo($('#children_' + $('#workbench').data('id')));
     $.ajax({
       type: 'POST',
       url: '/nodes.js',
-      data: 'node[name]=new;node[content]=new;node[parent_id]=' + $(this).parent().data('id'),
-      dataType: 'json'
+      data: 'node[preliminary_id]=' + preliminary_id + ';node[name]=new node ' + preliminary_id + ';node[content]=new content;node[parent_id]=' + $('#workbench').data('id'),
+      success: function(response) {
+        var data = eval('(' + response + ')');
+        $('#node_preliminary_' + data.preliminary_id).data('id', data.id).data('preliminary', false).attr('id', 'node_' + data.id);
+      }
     });
   });
   $('#delete_child').click(function() {
