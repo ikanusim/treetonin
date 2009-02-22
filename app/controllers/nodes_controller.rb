@@ -1,4 +1,3 @@
-require 'json_tree'
 class NodesController < Application
   # GET /nodes
   # GET /nodes.xml
