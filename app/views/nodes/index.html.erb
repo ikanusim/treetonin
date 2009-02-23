@@ -50,7 +50,6 @@ function setup_node(data)
 
 function handle_node_click(node)
 {
-console.log('clicked node ' + $(node).data('id'));
   $('#modify_buttons').appendTo($(node).find('.button_place:first'));
   if ($('#workbench').data('id') && $('#workbench').data('content') != $('#workbench').val())
   {
