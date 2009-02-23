@@ -112,6 +112,7 @@ $(function() {
       success: function(response) {
         var data = eval('(' + response + ')');
         $('#node_preliminary_' + data.preliminary_id).data('id', data.id).data('preliminary', false).attr('id', 'node_' + data.id);
+        $('#children_preliminary_' + data.preliminary_id).attr('id', 'children_' + data.id);
       }
     });
   });
@@ -136,6 +137,7 @@ $(function() {
       success: function(response) {
         var data = eval('(' + response + ')');
         $('#node_preliminary_' + data.preliminary_id).data('id', data.id).data('preliminary', false).attr('id', 'node_' + data.id);
+        $('#children_preliminary_' + data.preliminary_id).attr('id', 'children_' + data.id);
       }
     });
   });
