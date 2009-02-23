@@ -28,7 +28,7 @@ function setup_node(data)
         $.ajax({
           type: 'PUT',
           url: '/nodes/' + $('#workbench').data('id'),
-          data: 'node[name]=' + new_name
+          data: {'node[name]': new_name}
         });
       }
       return false;
@@ -58,7 +58,7 @@ console.log('clicked node ' + $(node).data('id'));
     $.ajax({
       type: 'PUT',
       url: '/nodes/' + $('#workbench').data('id'),
-      data: 'node[content]=' + $('#workbench').val()
+      data: {'node[content]': $('#workbench').val()}
     });
   }
   $('#workbench')
@@ -103,7 +103,12 @@ $(function() {
     $.ajax({
       type: 'POST',
       url: '/nodes.js',
-      data: 'node[preliminary_id]=' + preliminary_id + ';node[name]=new node ' + preliminary_id + ';node[content]=new content;node[parent_id]=' + $('#workbench').data('parent_id'),
+      data: {
+        'node[preliminary_id]': preliminary_id,
+        'node[name]': 'new node ' + preliminary_id,
+        'node[content]': 'new content',
+        'node[parent_id]': $('#workbench').data('parent_id')
+      },
       success: function(response) {
         var data = eval('(' + response + ')');
         $('#node_preliminary_' + data.preliminary_id).data('id', data.id).data('preliminary', false).attr('id', 'node_' + data.id);
@@ -122,7 +127,12 @@ $(function() {
     $.ajax({
       type: 'POST',
       url: '/nodes.js',
-      data: 'node[preliminary_id]=' + preliminary_id + ';node[name]=new node ' + preliminary_id + ';node[content]=new content;node[parent_id]=' + $('#workbench').data('id'),
+      data: {
+        'node[preliminary_id]': preliminary_id,
+        'node[name]': 'new node ' + preliminary_id,
+        'node[content]': 'new content',
+        'node[parent_id]': $('#workbench').data('id')
+      },
       success: function(response) {
         var data = eval('(' + response + ')');
         $('#node_preliminary_' + data.preliminary_id).data('id', data.id).data('preliminary', false).attr('id', 'node_' + data.id);
