@@ -12,10 +12,6 @@
     <%= f.text_area :content %>
   </p>
   <p>
-    <%= f.label :parent_id %><br />
-    <%= collection_select :node, :parent_id, Node.all, :id, :name %>
-  </p>
-  <p>
     <%= f.submit "Create" %>
   </p>
 <% end %>
