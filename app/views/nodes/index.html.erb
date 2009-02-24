@@ -7,6 +7,20 @@
 </style>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 <script type="text/javascript">
+function save_content_if_dirty()
+{
+  if ($('#workbench').data('id') && $('#workbench').data('content') != $('#workbench').val())
+  {
+    $('#workbench').data('content', $('#workbench').val());
+    $('#node_' + $('#workbench').data('id')).data('content', $('#workbench').val());
+    $.ajax({
+      type: 'PUT',
+      url: '/nodes/' + $('#workbench').data('id'),
+      data: {'node[content]': $('#workbench').val()}
+    });
+  }
+}
+
 function setup_node(data)
 {
   return $(document.createElement('p'))
@@ -48,18 +62,16 @@ function setup_node(data)
     );
 }
 
+function observe_content()
+{
+  save_content_if_dirty();
+  setTimeout('observe_content();', 10000);
+}
+
 function handle_node_click(node)
 {
+  save_content_if_dirty();
   $('#modify_buttons').appendTo($(node).find('.button_place:first'));
-  if ($('#workbench').data('id') && $('#workbench').data('content') != $('#workbench').val())
-  {
-    $('#node_' + $('#workbench').data('id')).data('content', $('#workbench').val());
-    $.ajax({
-      type: 'PUT',
-      url: '/nodes/' + $('#workbench').data('id'),
-      data: {'node[content]': $('#workbench').val()}
-    });
-  }
   $('#workbench')
     .val($(node).data('content'))
     .data('content', $(node).data('content'))
@@ -149,6 +161,7 @@ $(function() {
     $('#modify_buttons').appendTo($('#garage'));
     $('#node_' + $('#workbench').data('id')).remove();
   });
+  observe_content();
 });
 </script>
 <ul id="tree">
