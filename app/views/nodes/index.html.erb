@@ -99,6 +99,8 @@ function load_tree(tree_id)
   $.getJSON('/nodes/' + tree_id + '.json?deep=true', function(data) {
     build_list_from_tree(null, data);
   });
+  $('#trees').hide();
+  $('#tree, #workbench, #handle_box').appendTo($('body'));
 }
 
 $(function() {
@@ -166,17 +168,18 @@ $(function() {
   init_scriptextual({workbench: 'workbench', handle_box: 'handle_box'});
 });
 </script>
-<ul id="tree">
-</ul>
-<textarea rows="20" cols="80" id="workbench"></textarea>
 <div id="garage">
+  <ul id="tree">
+  </ul>
+  <textarea rows="20" cols="80" id="workbench"></textarea>
   <p id="modify_buttons">
     <a id="add_sibling">add sibling</a>
     <a id="add_child">add child</a>
     <a id="delete_child">delete node</a>
   </p>
+  <div id="handle_box"></div>
 </div>
-<div id="handle_box"></div>
+<div id="trees">
 <h1>Listing trees</h1>
 
 <table>
@@ -198,7 +201,7 @@ $(function() {
   </tr>
 <% end %>
 </table>
-
 <br />
 
 <%= link_to 'New tree', new_node_path %>
+</div>
