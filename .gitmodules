@@ -1,0 +1,3 @@
+[submodule "public/javascripts/scriptextual"]
+	path = public/javascripts/scriptextual
+	url = git://github.com/ikanusim/scriptextual.git

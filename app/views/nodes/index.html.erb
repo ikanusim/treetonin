@@ -6,6 +6,7 @@
   p { margin: 0; }
 </style>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<%= javascript_include_tag 'scriptextual/scriptextual' %>
 <script type="text/javascript">
 function save_content_if_dirty()
 {
@@ -162,6 +163,7 @@ $(function() {
     $('#node_' + $('#workbench').data('id')).remove();
   });
   observe_content();
+  init_scriptextual({workbench: 'workbench', handle_box: 'handle_box'});
 });
 </script>
 <ul id="tree">
@@ -174,6 +176,7 @@ $(function() {
     <a id="delete_child">delete node</a>
   </p>
 </div>
+<div id="handle_box"></div>
 <h1>Listing trees</h1>
 
 <table>
