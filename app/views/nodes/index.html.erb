@@ -30,6 +30,7 @@ function setup_node(data)
     .data('parent_id', data.parent_id)
     .data('preliminary', data.preliminary)
     .attr('id', 'node_' + data.id)
+    .css({color: 'rgb(' + data.red + ', 0, 0)'})
     .click(function() {
       handle_node_click(this);
       return false;
